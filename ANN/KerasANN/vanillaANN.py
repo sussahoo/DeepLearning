@@ -68,6 +68,7 @@ y_pred = (y_pred > 0.5)
 from sklearn.metrics import confusion_matrix
 cm = confusion_matrix(y_test, y_pred)
 
+accuracy = (cm[0,0]+cm[1,1]) / 2000 
 
 # Predicting a single new observation
 """Predict if the customer with the following informations will leave the bank:
@@ -83,3 +84,4 @@ Is Active Member: Yes
 Estimated Salary: 50000"""
 new_prediction = classifier.predict(sc.transform(np.array([[0.0, 0, 600, 1, 40, 3, 60000, 2, 1, 1, 50000]])))
 new_prediction = (new_prediction > 0.5)
+
