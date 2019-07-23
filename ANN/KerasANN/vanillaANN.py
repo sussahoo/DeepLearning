@@ -2,6 +2,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+from keras.models import model_from_json
 
 # Importing the dataset
 dataset = pd.read_csv('Churn_Modelling.csv')
@@ -53,10 +54,39 @@ classifier.add(Dense(units = 6, kernel_initializer = 'uniform', activation = 're
 classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'sigmoid'))
 
 # Compiling the ANN
-classifier.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
+#classifier.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
+
+#   grid search reco
+classifier.compile(optimizer = 'rmsprop', loss = 'binary_crossentropy', metrics = ['accuracy'])
+
 
 # Fitting the ANN to the Training set
-classifier.fit(X_train, y_train, batch_size = 10, epochs = 100)
+#classifier.fit(X_train, y_train, batch_size = 10, epochs = 100)
+
+#   grid search reco
+classifier.fit(X_train, y_train, batch_size = 25, epochs = 500)
+
+
+# serialize model to JSON
+model_json = classifier.to_json()
+with open("ANNmodel.json", "w") as json_file:
+    json_file.write(model_json)
+# serialize weights to HDF5
+classifier.save_weights("ANNmodel.h5")
+print("Saved model to disk")
+
+
+# later...
+ 
+# load json and create model
+json_file = open('ANNmodel.json', 'r')
+loaded_model_json = json_file.read()
+json_file.close()
+classifier = model_from_json(loaded_model_json)
+# load weights into new model
+classifier.load_weights("ANNmodel.h5")
+print("Loaded model from disk")
+
 
 # Part 3 - Making predictions and evaluating the model
 
